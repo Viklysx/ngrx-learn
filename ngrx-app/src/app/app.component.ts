@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import { clear, countSelector, decrease, increase } from './reducers/counter';
+import { clear, countSelector, decrease, increase, updatedAtSelector } from './reducers/counter';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +9,11 @@ import { clear, countSelector, decrease, increase } from './reducers/counter';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  updateAt?: number;
-
   count$ = this.store.select(countSelector); // подписчик на состояние хранилища
   cannotDecrease$ = this.count$.pipe(
     map(count => count <= 0)
-  )
+  );
+  updatedAt$ = this.store.select(updatedAtSelector)
 
   constructor (private store: Store) {
     
@@ -25,17 +24,14 @@ export class AppComponent {
   }
 
   increase():void {
-    this.updateAt = Date.now();
     this.store.dispatch(increase())
   }
 
   decrease():void {
-    this.updateAt = Date.now();
     this.store.dispatch(decrease())
   }
 
   clear():void {
-    this.updateAt = Date.now();
     this.store.dispatch(clear())
   }
 }
